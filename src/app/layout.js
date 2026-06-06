@@ -1,4 +1,5 @@
 import { Inter, Outfit } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const inter = Inter({
@@ -36,6 +37,7 @@ export default function RootLayout({ children }) {
         <div className="bg-glow-1"></div>
         <div className="bg-glow-2"></div>
         {children}
+        <Analytics />
       </body>
     </html>
   );
