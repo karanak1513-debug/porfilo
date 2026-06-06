@@ -1,0 +1,100 @@
+rules_version = '2';
+
+// ===============================================================
+// Data Model Definitions
+// ===============================================================
+//
+// Collection: guestbook
+// - public read, auth user create
+// Collection: portfolio_config
+// - public read, admin write
+// Collection: projects
+// - public read, admin write
+// Collection: certificates
+// - public read, admin write
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (request.auth.token.email == 'karanak1513@gmail.com' || request.auth.token.email == 'karankartik0251@gmail.com');
+    }
+
+    function isRecent(time) {
+      return time is timestamp &&
+             time > request.time - duration.value(5, 'm') &&
+             time <= request.time;
+    }
+
+    function isValidUrl(url) {
+      return url is string &&
+        (url.matches("^https://.*") || url.matches("^http://.*") || url.matches("^data:.*"));
+    }
+
+    // Guestbook validation function
+    function isValidGuestbookPost(data) {
+      return data.keys().hasAll(['message', 'userId', 'userName', 'timestamp']) &&
+             data.keys().hasOnly(['message', 'userId', 'userName', 'userPhoto', 'timestamp']) &&
+             data.message is string && data.message.size() >= 1 && data.message.size() <= 500 &&
+             data.userId == request.auth.uid &&
+             data.userName is string && data.userName.size() >= 1 && data.userName.size() <= 100 &&
+             isRecent(data.timestamp) &&
+             (!('userPhoto' in data) || isValidUrl(data.userPhoto));
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Guestbook Rules
+    match /guestbook/{messageId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && isValidGuestbookPost(request.resource.data);
+      allow update, delete: if false;
+    }
+
+    // Portfolio Config Rules
+    match /portfolio_config/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Projects Rules
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Certificates Rules
+    match /certificates/{certId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Interests Rules
+    match /interests/{interestId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Experiences Rules
+    match /experiences/{expId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Education Rules
+    match /education/{eduId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

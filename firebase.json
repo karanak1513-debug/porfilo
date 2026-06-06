@@ -1,0 +1,22 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "auth": {
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "Karan Kumar Portfolio",
+        "supportEmail": "karankartik0251@gmail.com",
+        "authorizedRedirectUris": [
+          "http://localhost",
+          "https://karankumar-portfolio-showcase.lovable.app"
+        ]
+      }
+    }
+  }
+}
