@@ -19,6 +19,22 @@ import Navbar from "./components/Navbar";
 import AuthPortal from "./components/AuthPortal";
 import AdminDashboard from "./components/AdminDashboard";
 import Guestbook from "./components/Guestbook";
+import { motion } from "framer-motion";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -39,6 +55,7 @@ export default function Home() {
   });
 
   const [projects, setProjects] = useState([]);
+  const [links, setLinks] = useState([]);
   const [certs, setCerts] = useState([]);
   const [interests, setInterests] = useState([]);
   const [experiences, setExperiences] = useState([]);
@@ -149,6 +166,12 @@ export default function Home() {
       }
     });
 
+    const unsubLinks = onSnapshot(query(collection(db, "links"), orderBy("order", "asc")), (snap) => {
+      const items = [];
+      snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+      setLinks(items);
+    });
+
     const unsubProjects = onSnapshot(query(collection(db, "projects"), orderBy("order", "asc")), (snap) => {
       const items = [];
       snap.forEach(d => items.push({ id: d.id, ...d.data() }));
@@ -181,6 +204,7 @@ export default function Home() {
 
     return () => {
       unsubConfig();
+      unsubLinks();
       unsubProjects();
       unsubCerts();
       unsubInterests();
@@ -246,8 +270,14 @@ export default function Home() {
       <main>
         {/* Home Section */}
         <section id="home" className="hero-section">
-          <div className="container hero-container">
-            <div className="hero-content">
+          <motion.div 
+            className="container hero-container"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+          >
+            <motion.div className="hero-content" variants={fadeInUp}>
               <span className="badge"><i className="fa-solid fa-sparkles"></i> Open for Opportunities</span>
               <h1 className="hero-title">
                 Hi, I'm <span className="gradient-text">{generalData.heroTitle}</span>
@@ -276,8 +306,8 @@ export default function Home() {
                   <i className="fa-solid fa-download"></i> <span>Download Resume</span>
                 </a>
               </div>
-            </div>
-            <div className="hero-visual">
+            </motion.div>
+            <motion.div className="hero-visual" variants={fadeInUp}>
               <div className="glass-sphere-container">
                 <div className="glass-sphere" style={heroSphereBg}>
                   {!generalData.profilePhotoUrl && (
@@ -290,13 +320,50 @@ export default function Home() {
                   )}
                 </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
+        </section>
+
+        {/* Links Section */}
+        <section id="links" className="links-section">
+          <motion.div 
+            className="container"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+          >
+            <motion.div className="section-header" style={{ textAlign: "center", marginBottom: "40px" }} variants={fadeInUp}>
+              <h2 className="section-title gradient-text" style={{ fontSize: "2.5rem", marginBottom: "10px" }}>Links</h2>
+              <p style={{ color: "var(--text-secondary)", fontSize: "1rem" }}>Find me online</p>
+            </motion.div>
+            <motion.div className="links-grid" id="links-container" variants={staggerContainer}>
+              {links.map(l => (
+                  <motion.a key={l.id} href={l.url} target="_blank" rel="noopener noreferrer" className="link-card glass-card" variants={fadeInUp}>
+                    {l.logoUrl ? (
+                      <img src={l.logoUrl} alt={l.title} style={{ width: "36px", height: "36px", marginBottom: "12px", objectFit: "contain", borderRadius: "4px" }} />
+                    ) : (
+                      <div className="link-icon-wrapper">
+                        <i className={l.icon || "fa-solid fa-link"}></i>
+                      </div>
+                    )}
+                    <h3>{l.title}</h3>
+                    <p>{l.subtitle}</p>
+                  </motion.a>
+                ))}
+            </motion.div>
+          </motion.div>
         </section>
 
         {/* About Section */}
         <section id="about" className="about-section">
-          <div className="container">
+          <motion.div 
+            className="container"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+          >
             <div className="section-header">
               <span className="section-tag">About Me</span>
               <h2 className="section-title">Bridging Business & Tech</h2>
@@ -342,12 +409,18 @@ export default function Home() {
                 </ul>
               </div>
             </div>
-          </div>
+          </motion.div>
         </section>
 
         {/* Skills Section */}
         <section id="skills" className="skills-section">
-          <div className="container">
+          <motion.div 
+            className="container"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+          >
             <div className="section-header">
               <span className="section-tag">Skills</span>
               <h2 className="section-title">My Technical Toolbox</h2>
@@ -389,12 +462,18 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </section>
 
         {/* Experience Section */}
         <section id="experience" className="experience-section">
-          <div className="container">
+          <motion.div 
+            className="container"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+          >
             <div className="section-header">
               <span className="section-tag">Experience</span>
               <h2 className="section-title">Professional Journey</h2>
@@ -424,12 +503,18 @@ export default function Home() {
                 ))
               )}
             </div>
-          </div>
+          </motion.div>
         </section>
 
         {/* Projects Section */}
         <section id="projects" className="projects-section">
-          <div className="container">
+          <motion.div 
+            className="container"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+          >
             <div className="section-header">
               <span className="section-tag">Projects</span>
               <h2 className="section-title">Featured Creations</h2>
@@ -473,12 +558,18 @@ export default function Home() {
                 ))
               )}
             </div>
-          </div>
+          </motion.div>
         </section>
 
         {/* Certifications Section */}
         <section id="certifications" className="certifications-section">
-          <div className="container">
+          <motion.div 
+            className="container"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+          >
             <div className="section-header">
               <span className="section-tag">Certifications</span>
               <h2 className="section-title">Credentials & Achievements</h2>
@@ -506,12 +597,18 @@ export default function Home() {
                 ))
               )}
             </div>
-          </div>
+          </motion.div>
         </section>
 
         {/* Education Section */}
         <section id="education" className="education-section">
-          <div className="container">
+          <motion.div 
+            className="container"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+          >
             <div className="section-header">
               <span className="section-tag">Education</span>
               <h2 className="section-title">Academic Background</h2>
@@ -533,12 +630,18 @@ export default function Home() {
                 ))
               )}
             </div>
-          </div>
+          </motion.div>
         </section>
 
         {/* Interactive Guestbook Portal */}
         <section id="portal" className="portal-section">
-          <div className="container">
+          <motion.div 
+            className="container"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+          >
             <div className="section-header">
               <span className="section-tag">Interactive</span>
               <h2 className="section-title">Client & Guest Portal</h2>
@@ -547,7 +650,7 @@ export default function Home() {
               <Guestbook user={user} />
               <AuthPortal user={user} />
             </div>
-          </div>
+          </motion.div>
         </section>
 
         {/* Admin Console Dashboard */}
@@ -555,7 +658,13 @@ export default function Home() {
 
         {/* Contact Section */}
         <section id="contact" className="contact-section">
-          <div className="container">
+          <motion.div 
+            className="container"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={staggerContainer}
+          >
             <div className="section-header">
               <span className="section-tag">Get In Touch</span>
               <h2 className="section-title">Let's Build Something Great</h2>
@@ -629,7 +738,7 @@ export default function Home() {
                 </form>
               </div>
             </div>
-          </div>
+          </motion.div>
         </section>
       </main>
 

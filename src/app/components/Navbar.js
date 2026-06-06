@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -36,7 +37,13 @@ export default function Navbar() {
   };
 
   return (
-    <header id="navbar" className={isScrolled ? "scrolled" : ""}>
+    <motion.header 
+      id="navbar" 
+      className={isScrolled ? "scrolled" : ""}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
       <div className="nav-container">
         <a href="#home" className="logo" onClick={closeMenu}>
           <span className="logo-accent">K</span>aran<span className="logo-dot">.</span>
@@ -69,6 +76,6 @@ export default function Navbar() {
           </button>
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 }
