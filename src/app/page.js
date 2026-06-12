@@ -345,7 +345,7 @@ export default function Home() {
               <h2 className="section-title gradient-text" style={{ fontSize: "2.5rem", marginBottom: "10px" }}>Links</h2>
               <p style={{ color: "var(--text-secondary)", fontSize: "1rem" }}>Find me online</p>
             </motion.div>
-            <motion.div className="links-grid" id="links-container" variants={staggerContainer}>
+            <div className="links-grid" id="links-container">
               {links.length === 0 ? (
                 <div className="message-empty" style={{ gridColumn: "1 / -1", textAlign: "center", padding: "40px", color: "var(--text-muted)", background: "rgba(255, 255, 255, 0.03)", borderRadius: "var(--radius-lg)", border: "1px dashed rgba(255, 255, 255, 0.1)" }}>
                   <i className="fa-solid fa-link-slash" style={{ fontSize: "2rem", marginBottom: "15px", opacity: 0.5 }}></i>
@@ -353,7 +353,7 @@ export default function Home() {
                 </div>
               ) : (
                 links.map(l => (
-                  <motion.a key={l.id} href={l.url} target="_blank" rel="noopener noreferrer" className="link-card glass-card" variants={fadeInUp}>
+                  <a key={l.id} href={l.url} target="_blank" rel="noopener noreferrer" className="link-card glass-card">
                     {l.logoUrl ? (
                       <img src={l.logoUrl} alt={l.title} style={{ width: "36px", height: "36px", marginBottom: "12px", objectFit: "contain", borderRadius: "4px" }} />
                     ) : (
@@ -363,10 +363,10 @@ export default function Home() {
                     )}
                     <h3>{l.title}</h3>
                     <p>{l.subtitle}</p>
-                  </motion.a>
+                  </a>
                 ))
               )}
-            </motion.div>
+            </div>
           </motion.div>
         </section>
 
